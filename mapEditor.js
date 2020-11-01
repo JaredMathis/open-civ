@@ -107,12 +107,57 @@ angular.module('open-civ')
                 }
             };
 
+            scope.addPlains = function () {
+                for (let i = 0; i < rowCount; i++) {
+                    for (let j = 0; j < colCount; j++) {
+                        if (['grass'].includes(scope.map[i][j])) {
+                            let d = distanceFromEquator(mid, i) / mid;
+                            if (d < .35) {
+                                if (Math.random() > .5) {
+                                    scope.map[i][j] = 'plains';
+                                }
+                            }
+                            if (d < .2) {
+                                if (Math.random() > .1) {
+                                    scope.map[i][j] = 'plains';
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            scope.addDesert = function () {
+                for (let i = 0; i < rowCount; i++) {
+                    for (let j = 0; j < colCount; j++) {
+                        if (['plains'].includes(scope.map[i][j])) {
+                            let d = distanceFromEquator(mid, i) / mid;
+                            if (d < .25) {
+                                if (Math.random() > .8) {
+                                    scope.map[i][j] = 'desert';
+                                }
+                            }
+                            if (d < .1) {
+                                if (Math.random() > .2) {
+                                    scope.map[i][j] = 'desert';
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
             scope.seed();
+
             scope.iterate();
             scope.iterate();
             scope.iterate();
 
             scope.addIce();
+
+            scope.addPlains();
+
+            scope.addDesert();
         },
         template: `
         <button ng-click="seed()">seed</button>
