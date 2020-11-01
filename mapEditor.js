@@ -4,7 +4,7 @@ angular.module('open-civ')
         scope: {
         },
         link: function(scope, element, attrs) {
-            let rowCount = 60;
+            let rowCount = 50;
             let colCount = 2*rowCount;
 
             let mid = Math.floor(rowCount / 2);
@@ -12,6 +12,8 @@ angular.module('open-civ')
             let continentCount = 7;
 
             scope.seed = function () {
+                Math.seedrandom(new Date().toString());
+
                 scope.map = [];
                 for (let i = 0; i < rowCount; i++) {
                     scope.map.push([]);
@@ -20,10 +22,9 @@ angular.module('open-civ')
                     }
                 }
 
-                Math.seedrandom(new Date().toString());
                 for (let i = 0; i < rowCount; i++) {
                     for (let j = 0; j < colCount; j++) {
-                        if (Math.random() < .5) {
+                        if (Math.random() < .485) {
                             scope.map[i][j] = 'mountains';
                         }
                         if (Math.random() < .05) {
@@ -40,6 +41,7 @@ angular.module('open-civ')
                     for (let j = 0; j < colCount; j++) {
                         let n1 = neighbors(scope.map, i, j, 1);
                         let n2 = neighbors(scope.map, i, j, 2);
+                        let n3 = neighbors(scope.map, i, j, 3);
                         if (scope.map[i][j] === 'ocean') {
                             // If we have a non-water neighbor, make us coast
                             if (n1.filter(n => !water.includes(n)).length > 0) {
@@ -52,21 +54,28 @@ angular.module('open-civ')
                             // All neighbors within distance 2 are water
                             if (n2.filter(n => water.includes(n)).length === n2.length) {
                                 scope.map[i][j] = 'ocean';
-                                console.log('here')
                             }
 
                             // No ocean, all land or coast
                             if (n2.filter(n => n === 'ocean').length === 0) {
-                                scope.map[i][j] = randomLand(i, mid);
+                                scope.map[i][j] = 'grass';
                             }
                         } else if (scope.map[i][j] === 'mountains') {
-                            // If we have a neighbor other than 
-                            if (n1.filter(n => water.includes(n)).length > 2) {
+                            if (n2.filter(n => n === 'grass').length / n2.length > .35) {
+                                scope.map[i][j] = 'grass';
+                            }
+                            // Over half neighbors water makes mountain coast.
+                            if (n1.filter(n => water.includes(n)).length / n1.length > .5) {
                                 scope.map[i][j] = 'coast';
                             }
                         } else if (scope.map[i][j] === 'volcano') {
+                            // Volcano next to water becomes mountains
                             if (n1.filter(n => water.includes(n)).length > 0) {
                                 scope.map[i][j] = 'mountains';
+                            }
+                        } else if (scope.map[i][j] === 'grass') {
+                            if (n3.filter(n => water.includes(n)).length / n3.length < .005) {
+                                scope.map[i][j] = 'plains';
                             }
                         }
                     }
@@ -76,6 +85,8 @@ angular.module('open-civ')
             scope.seed();
             scope.iterate();
             scope.iterate();
+            scope.iterate();
+
         },
         template: `
         <button ng-click="seed()">seed</button>
@@ -84,11 +95,6 @@ angular.module('open-civ')
         `
     }
 });
-
-function randomLand(row, mid) {
-    // TODO:
-    return 'grass';
-}
 
 function distanceFromEquator(mid, row) {
     if (row > mid) {
