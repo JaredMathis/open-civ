@@ -15,10 +15,11 @@ angular.module('open-civ')
             }
 
             scope.iterate = function () {
+
             }
         },
         template: `
-        <button ng-click="">Iterate</button>
+        <button ng-click="iterate()">Iterate</button>
         <map-viewer rows="map"></map-viewer>
         `
     }
