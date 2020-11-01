@@ -1,6 +1,5 @@
 angular.module('open-civ')
-.directive('mapViewer', function(terrain) {
-    console.log({terrain})
+.directive('mapViewer', function(terrain, randomIntFromInterval) {
     return {
         scope: {
             rows: '&',
@@ -23,7 +22,3 @@ angular.module('open-civ')
         `
     }
 });
-
-function randomIntFromInterval(min, max) { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }

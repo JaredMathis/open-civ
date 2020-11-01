@@ -1,5 +1,5 @@
 angular.module('open-civ')
-.directive('mapEditor', function() {
+.directive('mapEditor', function(randomIntFromInterval) {
     return {
         scope: {
         },
@@ -12,6 +12,9 @@ angular.module('open-civ')
                 for (let j = 0; j < colCount; j++) {
                     scope.map[i].push('ocean');
                 }
+            }
+
+            scope.iterate = function () {
             }
         },
         template: `
