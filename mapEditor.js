@@ -82,11 +82,37 @@ angular.module('open-civ')
                 }
             }
 
+            scope.addIce = function () {
+                for (let i = 0; i < rowCount; i++) {
+                    for (let j = 0; j < colCount; j++) {
+                        if (['grass', 'plains'].includes(scope.map[i][j])) {
+                            let d = distanceFromEquator(mid, i) / mid;
+                            if (d > .7) {
+                                if (Math.random() > .7) {
+                                    scope.map[i][j] = 'ice';
+                                }
+                            }
+                            if (d > .8) {
+                                if (Math.random() > .3) {
+                                    scope.map[i][j] = 'ice';
+                                }
+                            }
+                            if (d > .9) {
+                                if (Math.random() > .05) {
+                                    scope.map[i][j] = 'ice';
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
             scope.seed();
             scope.iterate();
             scope.iterate();
             scope.iterate();
 
+            scope.addIce();
         },
         template: `
         <button ng-click="seed()">seed</button>
