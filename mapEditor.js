@@ -147,6 +147,26 @@ angular.module('open-civ')
                 }
             };
 
+            scope.addJungle = function () {
+                for (let i = 0; i < rowCount; i++) {
+                    for (let j = 0; j < colCount; j++) {
+                        if (['grass'].includes(scope.map[i][j])) {
+                            let d = distanceFromEquator(mid, i) / mid;
+                            let n3 = neighbors(scope.map, i, j, 3);
+                            if (n3.filter(n => water.includes(n)).length / n3.length > .15) {
+                                if (Math.random() > .5) {
+                                    if (d < .3) {
+                                        scope.map[i][j] = 'jungle';
+                                    } else {
+                                        scope.map[i][j] = 'forest';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
             scope.seed();
 
             scope.iterate();
@@ -158,6 +178,8 @@ angular.module('open-civ')
             scope.addPlains();
 
             scope.addDesert();
+
+            scope.addJungle();
         },
         template: `
         <button ng-click="seed()">seed</button>
